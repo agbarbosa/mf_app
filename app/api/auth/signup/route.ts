@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
-import { hash } from 'bcryptjs'
-import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import { userService } from '@/lib/services/UserService'
 
 const signupSchema = z.object({
   email: z.string().email(),
@@ -14,34 +13,11 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { email, password, name } = signupSchema.parse(body)
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'User already exists' },
-        { status: 400 }
-      )
-    }
-
-    // Hash password
-    const hashedPassword = await hash(password, 12)
-
-    // Create user with free subscription
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-        subscription: {
-          create: {
-            tier: 'FREE',
-            status: 'ACTIVE',
-          },
-        },
-      },
+    // Use UserService to create user (Phase 2: Service Layer)
+    const user = await userService.createUser({
+      email,
+      password,
+      name,
     })
 
     return NextResponse.json(
@@ -57,6 +33,14 @@ export async function POST(req: Request) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 })
+    }
+
+    // Handle user already exists error
+    if (error instanceof Error && error.message === 'User already exists') {
+      return NextResponse.json(
+        { error: 'User already exists' },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
