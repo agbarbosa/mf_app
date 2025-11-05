@@ -34,20 +34,40 @@ A full-stack subscription-based community platform built with Next.js, React, Ty
 
 ## Getting Started
 
-### 1. Clone the repository
+You can run this application using either Docker (recommended for quick setup) or local development.
+
+### Option 1: Docker Setup (Recommended)
+
+For detailed Docker instructions, see [DOCKER.md](./DOCKER.md)
+
+Quick start with Docker:
+
+```bash
+# Copy environment file
+cp .env.docker .env
+
+# Start all services
+docker-compose up -d
+
+# Access the application at http://localhost:3000
+```
+
+### Option 2: Local Development
+
+#### 1. Clone the repository
 
 ```bash
 git clone <repository-url>
 cd mf_app
 ```
 
-### 2. Install dependencies
+#### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Set up environment variables
+#### 3. Set up environment variables
 
 Copy `.env.example` to `.env` and fill in your values:
 
@@ -75,7 +95,7 @@ STRIPE_PRICE_ID_PREMIUM="price_..."
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-### 4. Set up the database
+#### 4. Set up the database
 
 ```bash
 # Generate Prisma Client
@@ -88,7 +108,7 @@ npx prisma migrate dev --name init
 npx prisma db seed
 ```
 
-### 5. Set up Stripe
+#### 5. Set up Stripe
 
 1. Create a Stripe account at https://stripe.com
 2. Get your API keys from the Stripe Dashboard
@@ -96,7 +116,7 @@ npx prisma db seed
 4. Set up webhook endpoint: `https://yourdomain.com/api/webhooks/stripe`
 5. Add webhook secret to `.env`
 
-### 6. Run the development server
+#### 6. Run the development server
 
 ```bash
 npm run dev
