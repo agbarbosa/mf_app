@@ -47,3 +47,50 @@ jest.mock('@prisma/client', () => ({
     },
   })),
 }))
+
+// Mock repository singletons
+jest.mock('@/lib/repositories', () => {
+  const mockRepo = {
+    findById: jest.fn(),
+    findByEmail: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  }
+
+  return {
+    userRepository: mockRepo,
+    subscriptionRepository: {
+      findByUserId: jest.fn(),
+      update: jest.fn(),
+      updateStripeCustomerId: jest.fn(),
+    },
+    eventRepository: {
+      findAll: jest.fn(),
+      findById: jest.fn(),
+      findByStatus: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      registerUser: jest.fn(),
+    },
+    courseRepository: {
+      findAll: jest.fn(),
+      findById: jest.fn(),
+      findByPublishedStatus: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      enrollUser: jest.fn(),
+    },
+    serviceRepository: {
+      findAll: jest.fn(),
+      findByCategory: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+    repositories: {},
+  }
+})
+
