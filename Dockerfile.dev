@@ -13,7 +13,7 @@ COPY prisma ./prisma/
 
 # Install all dependencies (including dev dependencies)
 # This will also run postinstall script (prisma generate)
-RUN npm ci
+RUN npm install
 
 # Expose port
 EXPOSE 3000
