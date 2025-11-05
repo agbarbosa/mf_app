@@ -13,6 +13,20 @@ import {
  */
 export class PrismaCourseRepository implements ICourseRepository {
   /**
+   * Find all courses (published and unpublished) with module and enrollment counts
+   * @returns Array of all courses
+   */
+  async findAll(): Promise<CourseWithCounts[]> {
+    return prisma.course.findMany({
+      include: {
+        _count: {
+          select: { modules: true, enrollments: true },
+        },
+      },
+    })
+  }
+
+  /**
    * Find all published courses with module and enrollment counts
    * @returns Array of published courses
    */
@@ -36,6 +50,26 @@ export class PrismaCourseRepository implements ICourseRepository {
       where: {
         published: true,
         isPremiumOnly: false,
+      },
+      include: {
+        _count: {
+          select: { modules: true, enrollments: true },
+        },
+      },
+    })
+  }
+
+  /**
+   * Find courses by published status and premium flag
+   * @param published - Published status filter
+   * @param isPremiumOnly - Premium flag filter
+   * @returns Array of filtered courses
+   */
+  async findByPublishedStatus(published: boolean, isPremiumOnly: boolean): Promise<CourseWithCounts[]> {
+    return prisma.course.findMany({
+      where: {
+        published,
+        isPremiumOnly,
       },
       include: {
         _count: {
