@@ -1,8 +1,20 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
-import { prisma } from '@/lib/prisma'
 import Stripe from 'stripe'
+import {
+  WebhookRouter,
+  CheckoutCompletedHandler,
+  InvoicePaymentSucceededHandler,
+  SubscriptionDeletedHandler,
+} from '@/lib/webhooks'
+import { subscriptionRepository } from '@/lib/repositories'
+
+// Initialize webhook router with handlers (Phase 4: Strategy Pattern)
+const router = new WebhookRouter()
+router.register(new CheckoutCompletedHandler(subscriptionRepository))
+router.register(new InvoicePaymentSucceededHandler(subscriptionRepository))
+router.register(new SubscriptionDeletedHandler(subscriptionRepository))
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -23,62 +35,8 @@ export async function POST(req: Request) {
     )
   }
 
-  const session = event.data.object as Stripe.Checkout.Session
-
-  if (event.type === 'checkout.session.completed') {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    )
-
-    await prisma.subscription.update({
-      where: {
-        userId: session?.metadata?.userId,
-      },
-      data: {
-        stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-        tier: 'PREMIUM',
-        status: 'ACTIVE',
-      },
-    })
-  }
-
-  if (event.type === 'invoice.payment_succeeded') {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    )
-
-    await prisma.subscription.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-        status: 'ACTIVE',
-      },
-    })
-  }
-
-  if (event.type === 'customer.subscription.deleted') {
-    const subscription = event.data.object as Stripe.Subscription
-
-    await prisma.subscription.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
-        tier: 'FREE',
-        status: 'CANCELED',
-      },
-    })
-  }
+  // Route event to appropriate handler (Phase 4: Strategy Pattern)
+  await router.route(event)
 
   return NextResponse.json({ received: true })
 }

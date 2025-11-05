@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
-import { hasAccess } from '@/lib/utils/subscription'
+import { eventRepository } from '@/lib/repositories'
+import { hasPremiumAccess } from '@/lib/authorization'
 
 export async function GET(req: Request) {
   try {
@@ -13,40 +13,15 @@ export async function GET(req: Request) {
     let events
 
     if (session?.user) {
-      const isPremium =
-        session.user.subscription?.tier === 'PREMIUM' &&
-        session.user.subscription?.status === 'ACTIVE'
+      const isPremium = hasPremiumAccess(session)
 
       if (isPremium || showAll) {
-        events = await prisma.event.findMany({
-          orderBy: { startDate: 'asc' },
-          include: {
-            _count: {
-              select: { registrations: true },
-            },
-          },
-        })
+        events = await eventRepository.findAll()
       } else {
-        events = await prisma.event.findMany({
-          where: { isPremiumOnly: false },
-          orderBy: { startDate: 'asc' },
-          include: {
-            _count: {
-              select: { registrations: true },
-            },
-          },
-        })
+        events = await eventRepository.findByStatus(undefined, false)
       }
     } else {
-      events = await prisma.event.findMany({
-        where: { isPremiumOnly: false },
-        orderBy: { startDate: 'asc' },
-        include: {
-          _count: {
-            select: { registrations: true },
-          },
-        },
-      })
+      events = await eventRepository.findByStatus(undefined, false)
     }
 
     return NextResponse.json(events)
@@ -68,17 +43,15 @@ export async function POST(req: Request) {
 
     const body = await req.json()
 
-    const event = await prisma.event.create({
-      data: {
-        title: body.title,
-        description: body.description,
-        startDate: new Date(body.startDate),
-        endDate: new Date(body.endDate),
-        location: body.location,
-        imageUrl: body.imageUrl,
-        maxAttendees: body.maxAttendees,
-        isPremiumOnly: body.isPremiumOnly || false,
-      },
+    const event = await eventRepository.create({
+      title: body.title,
+      description: body.description,
+      startDate: new Date(body.startDate),
+      endDate: new Date(body.endDate),
+      location: body.location,
+      imageUrl: body.imageUrl,
+      maxAttendees: body.maxAttendees,
+      isPremiumOnly: body.isPremiumOnly || false,
     })
 
     return NextResponse.json(event, { status: 201 })

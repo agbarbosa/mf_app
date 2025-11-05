@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
-import { createPortalSession } from '@/lib/stripe'
+import { subscriptionRepository } from '@/lib/repositories'
+import { paymentService } from '@/lib/services'
 
 export async function POST(req: Request) {
   try {
@@ -12,9 +12,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const subscription = await prisma.subscription.findUnique({
-      where: { userId: session.user.id },
-    })
+    const subscription = await subscriptionRepository.findByUserId(
+      session.user.id
+    )
 
     if (!subscription?.stripeCustomerId) {
       return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const portalSession = await createPortalSession(
+    const portalSession = await paymentService.createPortalSession(
       subscription.stripeCustomerId
     )
 

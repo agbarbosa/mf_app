@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
-import { hasAccess } from '@/lib/utils/subscription'
+import { eventRepository } from '@/lib/repositories'
+import { checkResourceAccess } from '@/lib/authorization'
 
 export async function POST(
   req: Request,
@@ -15,51 +15,25 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const event = await prisma.event.findUnique({
-      where: { id: params.id },
-    })
+    const event = await eventRepository.findById(params.id)
 
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 })
     }
 
     // Check if user has access
-    if (
-      !hasAccess(
-        session.user.subscription?.tier,
-        session.user.subscription?.status,
-        event.isPremiumOnly
-      )
-    ) {
+    if (!checkResourceAccess(session, event.isPremiumOnly)) {
       return NextResponse.json(
         { error: 'Premium subscription required' },
         { status: 403 }
       )
     }
 
-    // Check if already registered
-    const existingRegistration = await prisma.eventRegistration.findUnique({
-      where: {
-        eventId_userId: {
-          eventId: params.id,
-          userId: session.user.id,
-        },
-      },
-    })
-
-    if (existingRegistration) {
-      return NextResponse.json(
-        { error: 'Already registered' },
-        { status: 400 }
-      )
-    }
-
-    const registration = await prisma.eventRegistration.create({
-      data: {
-        eventId: params.id,
-        userId: session.user.id,
-      },
-    })
+    // Register for event
+    const registration = await eventRepository.registerUser(
+      params.id,
+      session.user.id
+    )
 
     return NextResponse.json(registration, { status: 201 })
   } catch (error) {
