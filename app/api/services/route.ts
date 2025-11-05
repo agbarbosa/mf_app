@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { serviceRepository } from '@/lib/repositories'
+import { hasPremiumAccess } from '@/lib/authorization'
 
 export async function GET(req: Request) {
   try {
@@ -10,50 +11,15 @@ export async function GET(req: Request) {
     let services
 
     if (session?.user) {
-      const isPremium =
-        session.user.subscription?.tier === 'PREMIUM' &&
-        session.user.subscription?.status === 'ACTIVE'
+      const isPremium = hasPremiumAccess(session)
 
       if (isPremium) {
-        services = await prisma.service.findMany({
-          where: { published: true },
-          include: {
-            user: {
-              select: {
-                name: true,
-                email: true,
-              },
-            },
-          },
-          orderBy: { createdAt: 'desc' },
-        })
+        services = await serviceRepository.findAll()
       } else {
-        services = await prisma.service.findMany({
-          where: { published: true, isPremiumOnly: false },
-          include: {
-            user: {
-              select: {
-                name: true,
-                email: true,
-              },
-            },
-          },
-          orderBy: { createdAt: 'desc' },
-        })
+        services = await serviceRepository.findByCategory(undefined, false)
       }
     } else {
-      services = await prisma.service.findMany({
-        where: { published: true, isPremiumOnly: false },
-        include: {
-          user: {
-            select: {
-              name: true,
-              email: true,
-            },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-      })
+      services = await serviceRepository.findByCategory(undefined, false)
     }
 
     return NextResponse.json(services)
@@ -75,17 +41,15 @@ export async function POST(req: Request) {
 
     const body = await req.json()
 
-    const service = await prisma.service.create({
-      data: {
-        userId: session.user.id,
-        title: body.title,
-        description: body.description,
-        category: body.category,
-        imageUrl: body.imageUrl,
-        contactEmail: body.contactEmail,
-        contactPhone: body.contactPhone,
-        isPremiumOnly: body.isPremiumOnly || false,
-      },
+    const service = await serviceRepository.create({
+      userId: session.user.id,
+      title: body.title,
+      description: body.description,
+      category: body.category,
+      imageUrl: body.imageUrl,
+      contactEmail: body.contactEmail,
+      contactPhone: body.contactPhone,
+      isPremiumOnly: body.isPremiumOnly || false,
     })
 
     return NextResponse.json(service, { status: 201 })

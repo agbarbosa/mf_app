@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { courseRepository } from '@/lib/repositories'
 import { hasPremiumAccess } from '@/lib/authorization'
 
 export async function GET(req: Request) {
@@ -14,33 +14,12 @@ export async function GET(req: Request) {
       const isPremium = hasPremiumAccess(session)
 
       if (isPremium) {
-        courses = await prisma.course.findMany({
-          where: { published: true },
-          include: {
-            _count: {
-              select: { modules: true, enrollments: true },
-            },
-          },
-        })
+        courses = await courseRepository.findAll()
       } else {
-        courses = await prisma.course.findMany({
-          where: { published: true, isPremiumOnly: false },
-          include: {
-            _count: {
-              select: { modules: true, enrollments: true },
-            },
-          },
-        })
+        courses = await courseRepository.findByPublishedStatus(true, false)
       }
     } else {
-      courses = await prisma.course.findMany({
-        where: { published: true, isPremiumOnly: false },
-        include: {
-          _count: {
-            select: { modules: true, enrollments: true },
-          },
-        },
-      })
+      courses = await courseRepository.findByPublishedStatus(true, false)
     }
 
     return NextResponse.json(courses)
@@ -62,15 +41,13 @@ export async function POST(req: Request) {
 
     const body = await req.json()
 
-    const course = await prisma.course.create({
-      data: {
-        title: body.title,
-        description: body.description,
-        thumbnail: body.thumbnail,
-        isPremiumOnly: body.isPremiumOnly || false,
-        duration: body.duration,
-        published: body.published || false,
-      },
+    const course = await courseRepository.create({
+      title: body.title,
+      description: body.description,
+      thumbnail: body.thumbnail,
+      isPremiumOnly: body.isPremiumOnly || false,
+      duration: body.duration,
+      published: body.published || false,
     })
 
     return NextResponse.json(course, { status: 201 })

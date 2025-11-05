@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { createCheckoutSession } from '@/lib/stripe'
+import { paymentService } from '@/lib/services'
 
 export async function POST(req: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     const { priceId } = await req.json()
 
-    const checkoutSession = await createCheckoutSession(
+    const checkoutSession = await paymentService.createCheckoutSession(
       session.user.id,
       session.user.email,
       priceId
