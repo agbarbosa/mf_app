@@ -1,17 +1,20 @@
-import { prisma } from '@/lib/prisma'
 import { IAuthService, AuthenticatedUser } from './interfaces/IAuthService'
 import { IPasswordService } from './interfaces/IPasswordService'
+import { IUserRepository } from '@/lib/repositories/interfaces/IUserRepository'
 import { passwordService } from './PasswordService'
+import { userRepository } from '@/lib/repositories'
 
 /**
  * Authentication service
  * Handles user authentication and session validation
  *
- * Note: Currently uses Prisma directly. Will be refactored to use
- * IUserRepository in Phase 3 for better testability and decoupling.
+ * Phase 3: Now uses IUserRepository for data access (decoupled from Prisma)
  */
 export class AuthService implements IAuthService {
-  constructor(private passwordService: IPasswordService) {}
+  constructor(
+    private passwordService: IPasswordService,
+    private userRepository: IUserRepository
+  ) {}
 
   /**
    * Authenticate user with email and password
@@ -28,11 +31,8 @@ export class AuthService implements IAuthService {
       return null
     }
 
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: { subscription: true },
-    })
+    // Find user by email using repository
+    const user = await this.userRepository.findByEmail(email)
 
     if (!user) {
       return null
@@ -73,4 +73,4 @@ export class AuthService implements IAuthService {
 }
 
 // Export singleton instance
-export const authService = new AuthService(passwordService)
+export const authService = new AuthService(passwordService, userRepository)

@@ -1,14 +1,14 @@
-import { prisma } from '@/lib/prisma'
 import { User } from '@prisma/client'
 import { IPasswordService } from './interfaces/IPasswordService'
+import { IUserRepository } from '@/lib/repositories/interfaces/IUserRepository'
 import { passwordService } from './PasswordService'
+import { userRepository } from '@/lib/repositories'
 
 /**
  * User service
  * Handles user management and business logic
  *
- * Note: Currently uses Prisma directly. Will be refactored to use
- * IUserRepository in Phase 3 for better testability and decoupling.
+ * Phase 3: Now uses IUserRepository for data access (decoupled from Prisma)
  */
 
 export interface CreateUserDto {
@@ -28,7 +28,10 @@ export interface UserWithoutPassword {
 }
 
 export class UserService {
-  constructor(private passwordService: IPasswordService) {}
+  constructor(
+    private passwordService: IPasswordService,
+    private userRepository: IUserRepository
+  ) {}
 
   /**
    * Create a new user with free subscription
@@ -37,10 +40,8 @@ export class UserService {
    * @throws Error if user already exists
    */
   async createUser(data: CreateUserDto): Promise<UserWithoutPassword> {
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
-    })
+    // Check if user already exists using repository
+    const existingUser = await this.userRepository.findByEmail(data.email)
 
     if (existingUser) {
       throw new Error('User already exists')
@@ -49,20 +50,12 @@ export class UserService {
     // Hash password
     const hashedPassword = await this.passwordService.hash(data.password)
 
-    // Create user with free subscription
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        name: data.name,
-        password: hashedPassword,
-        image: data.image,
-        subscription: {
-          create: {
-            tier: 'FREE',
-            status: 'ACTIVE',
-          },
-        },
-      },
+    // Create user with free subscription using repository
+    const user = await this.userRepository.create({
+      email: data.email,
+      name: data.name,
+      password: hashedPassword,
+      image: data.image,
     })
 
     // Return user without password
@@ -75,9 +68,7 @@ export class UserService {
    * @returns User without password, or null if not found
    */
   async getUserById(id: string): Promise<UserWithoutPassword | null> {
-    const user = await prisma.user.findUnique({
-      where: { id },
-    })
+    const user = await this.userRepository.findById(id)
 
     if (!user) {
       return null
@@ -92,9 +83,7 @@ export class UserService {
    * @returns User without password, or null if not found
    */
   async getUserByEmail(email: string): Promise<UserWithoutPassword | null> {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    })
+    const user = await this.userRepository.findByEmail(email)
 
     if (!user) {
       return null
@@ -124,10 +113,7 @@ export class UserService {
       updateData.password = await this.passwordService.hash(data.password)
     }
 
-    const user = await prisma.user.update({
-      where: { id },
-      data: updateData,
-    })
+    const user = await this.userRepository.update(id, updateData)
 
     return this.sanitizeUser(user)
   }
@@ -137,9 +123,7 @@ export class UserService {
    * @param id - User ID
    */
   async deleteUser(id: string): Promise<void> {
-    await prisma.user.delete({
-      where: { id },
-    })
+    await this.userRepository.delete(id)
   }
 
   /**
@@ -154,4 +138,4 @@ export class UserService {
 }
 
 // Export singleton instance
-export const userService = new UserService(passwordService)
+export const userService = new UserService(passwordService, userRepository)
