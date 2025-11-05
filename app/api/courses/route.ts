@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { hasPremiumAccess } from '@/lib/authorization'
 
 export async function GET(req: Request) {
   try {
@@ -10,9 +11,7 @@ export async function GET(req: Request) {
     let courses
 
     if (session?.user) {
-      const isPremium =
-        session.user.subscription?.tier === 'PREMIUM' &&
-        session.user.subscription?.status === 'ACTIVE'
+      const isPremium = hasPremiumAccess(session)
 
       if (isPremium) {
         courses = await prisma.course.findMany({
