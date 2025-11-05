@@ -8,14 +8,12 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies)
-RUN npm ci
-
-# Copy prisma schema
+# Copy prisma schema (needed before npm install due to postinstall script)
 COPY prisma ./prisma/
 
-# Generate Prisma client
-RUN npx prisma generate
+# Install all dependencies (including dev dependencies)
+# This will also run postinstall script (prisma generate)
+RUN npm install
 
 # Expose port
 EXPOSE 3000

@@ -27,6 +27,11 @@ export interface CourseWithCounts extends Course {
 
 export interface ICourseRepository {
   /**
+   * Find all courses (published and unpublished)
+   */
+  findAll(): Promise<CourseWithCounts[]>
+
+  /**
    * Find all published courses
    */
   findAllPublished(): Promise<CourseWithCounts[]>
@@ -35,6 +40,11 @@ export interface ICourseRepository {
    * Find published free courses
    */
   findPublishedFreeCourses(): Promise<CourseWithCounts[]>
+
+  /**
+   * Find courses by published status and premium flag
+   */
+  findByPublishedStatus(published: boolean, isPremiumOnly: boolean): Promise<CourseWithCounts[]>
 
   /**
    * Find course by ID
