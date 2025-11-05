@@ -1,0 +1,5 @@
+export * from './IUserRepository'
+export * from './ISubscriptionRepository'
+export * from './IEventRepository'
+export * from './ICourseRepository'
+export * from './IServiceRepository'
