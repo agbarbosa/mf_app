@@ -21,7 +21,7 @@ export interface CreateUserDto {
 export interface UserWithoutPassword {
   id: string
   email: string
-  name: string
+  name: string | null
   image?: string | null
   createdAt: Date
   updatedAt: Date

@@ -22,8 +22,10 @@ export const createMockUserRepository = (): jest.Mocked<IUserRepository> => ({
  */
 export const createMockSubscriptionRepository = (): jest.Mocked<ISubscriptionRepository> => ({
   findByUserId: jest.fn(),
+  findByStripeSubscriptionId: jest.fn(),
   update: jest.fn(),
-  updateStripeCustomerId: jest.fn(),
+  updateByStripeSubscriptionId: jest.fn(),
+  cancel: jest.fn(),
 })
 
 /**
@@ -31,12 +33,14 @@ export const createMockSubscriptionRepository = (): jest.Mocked<ISubscriptionRep
  */
 export const createMockEventRepository = (): jest.Mocked<IEventRepository> => ({
   findAll: jest.fn(),
-  findById: jest.fn(),
+  findFreeEvents: jest.fn(),
   findByStatus: jest.fn(),
+  findById: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
   registerUser: jest.fn(),
+  unregisterUser: jest.fn(),
 })
 
 /**
@@ -44,8 +48,10 @@ export const createMockEventRepository = (): jest.Mocked<IEventRepository> => ({
  */
 export const createMockCourseRepository = (): jest.Mocked<ICourseRepository> => ({
   findAll: jest.fn(),
-  findById: jest.fn(),
+  findAllPublished: jest.fn(),
+  findPublishedFreeCourses: jest.fn(),
   findByPublishedStatus: jest.fn(),
+  findById: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
@@ -57,7 +63,10 @@ export const createMockCourseRepository = (): jest.Mocked<ICourseRepository> => 
  */
 export const createMockServiceRepository = (): jest.Mocked<IServiceRepository> => ({
   findAll: jest.fn(),
+  findAllPublished: jest.fn(),
+  findPublishedFreeServices: jest.fn(),
   findByCategory: jest.fn(),
+  findById: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
@@ -76,6 +85,7 @@ export const createMockPasswordService = (): jest.Mocked<IPasswordService> => ({
  */
 export const createMockAuthService = (): jest.Mocked<IAuthService> => ({
   authenticate: jest.fn(),
+  validateSession: jest.fn(),
 })
 
 /**
