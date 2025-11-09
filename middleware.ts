@@ -1,59 +1,69 @@
-import { withAuth } from 'next-auth/middleware';
-import createIntlMiddleware from 'next-intl/middleware';
-import { NextRequest, NextResponse } from 'next/server';
-import { locales } from './i18n';
+import { withAuth } from 'next-auth/middleware'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-const intlMiddleware = createIntlMiddleware({
-  locales,
-  defaultLocale: 'en',
-  localePrefix: 'as-needed'
-});
+// List of locale patterns to redirect (app is English-only)
+const locales = ['pt-BR', 'pt', 'es', 'en-US', 'en-GB', 'fr', 'de', 'it', 'ja', 'zh']
 
-const authMiddleware = withAuth(
-  function middleware(req) {
-    return intlMiddleware(req);
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const path = req.nextUrl.pathname;
-        // Allow access to public pages
-        if (
-          path === '/' ||
-          path.startsWith('/auth') ||
-          path.startsWith('/api/auth') ||
-          path.startsWith('/_next') ||
-          path.startsWith('/en') ||
-          path.startsWith('/pt-BR')
-        ) {
-          return true;
-        }
-        // Require authentication for protected routes
-        return !!token;
-      },
-    },
-  }
-);
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
 
-export default function middleware(req: NextRequest) {
-  const path = req.nextUrl.pathname;
+  // Check if the pathname starts with a locale
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  )
 
-  // Public routes that don't need auth but need i18n
-  const publicPathnameRegex = RegExp(
-    `^(/(${locales.join('|')}))?(\/auth|\/subscribe|\/courses|\/events|\/services)?/?$`,
-    'i'
-  );
+  // If path has a locale prefix, redirect to the path without locale
+  if (pathnameHasLocale) {
+    const locale = locales.find(
+      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    )
 
-  const isPublicPage = publicPathnameRegex.test(path);
-
-  if (isPublicPage) {
-    return intlMiddleware(req);
+    if (locale) {
+      // Remove the locale from the pathname
+      const newPathname = pathname.replace(`/${locale}`, '') || '/'
+      const url = req.nextUrl.clone()
+      url.pathname = newPathname
+      return NextResponse.redirect(url)
+    }
   }
 
-  // Protected routes need both i18n and auth
-  return (authMiddleware as any)(req);
+  // Use the default response for all other cases
+  // Auth protection is handled by the matcher config below
+  return NextResponse.next()
 }
 
+// Wrap with auth for protected routes
+export default withAuth(middleware, {
+  callbacks: {
+    authorized: ({ token, req }) => {
+      const path = req.nextUrl.pathname
+
+      // Public routes that don't require auth
+      if (
+        path === '/' ||
+        path.startsWith('/auth') ||
+        path.startsWith('/api/auth') ||
+        path.startsWith('/_next') ||
+        path.startsWith('/public')
+      ) {
+        return true
+      }
+
+      // Protected routes require a token
+      if (path.startsWith('/dashboard')) {
+        return !!token
+      }
+
+      // All other routes are accessible
+      return true
+    },
+  },
+})
+
 export const config = {
-  matcher: ['/', '/(pt-BR|en)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)']
+  matcher: [
+    // Match all routes except static files
+    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+  ],
 }
