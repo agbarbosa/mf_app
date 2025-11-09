@@ -42,6 +42,13 @@ export interface IEventRepository {
   findFreeEvents(): Promise<EventWithRegistrationCount[]>
 
   /**
+   * Find events by status and/or premium status
+   * @param status - Optional event status filter
+   * @param isPremiumOnly - Optional premium status filter
+   */
+  findByStatus(status?: EventStatus, isPremiumOnly?: boolean): Promise<EventWithRegistrationCount[]>
+
+  /**
    * Find event by ID
    */
   findById(id: string): Promise<Event | null>

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { Event } from '@prisma/client'
+import { Event, EventStatus } from '@prisma/client'
 import {
   IEventRepository,
   EventWithRegistrationCount,
@@ -34,6 +34,34 @@ export class PrismaEventRepository implements IEventRepository {
   async findFreeEvents(): Promise<EventWithRegistrationCount[]> {
     return prisma.event.findMany({
       where: { isPremiumOnly: false },
+      orderBy: { startDate: 'asc' },
+      include: {
+        _count: {
+          select: { registrations: true },
+        },
+      },
+    })
+  }
+
+  /**
+   * Find events by status and/or premium status
+   * @param status - Optional event status filter
+   * @param isPremiumOnly - Optional premium status filter
+   * @returns Array of filtered events with registration counts
+   */
+  async findByStatus(status?: EventStatus, isPremiumOnly?: boolean): Promise<EventWithRegistrationCount[]> {
+    const where: any = {}
+
+    if (status !== undefined) {
+      where.status = status
+    }
+
+    if (isPremiumOnly !== undefined) {
+      where.isPremiumOnly = isPremiumOnly
+    }
+
+    return prisma.event.findMany({
+      where,
       orderBy: { startDate: 'asc' },
       include: {
         _count: {
