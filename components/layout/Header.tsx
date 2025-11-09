@@ -2,10 +2,13 @@
 
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 export function Header() {
   const { data: session } = useSession()
+  const t = useTranslations('nav')
 
   return (
     <header className="bg-white shadow-sm">
@@ -17,23 +20,24 @@ export function Header() {
             </Link>
             <div className="hidden md:flex ml-10 space-x-8">
               <Link href="/events" className="text-gray-700 hover:text-primary-600">
-                Events
+                {t('events')}
               </Link>
               <Link href="/courses" className="text-gray-700 hover:text-primary-600">
-                Courses
+                {t('courses')}
               </Link>
               <Link href="/services" className="text-gray-700 hover:text-primary-600">
-                Services
+                {t('services')}
               </Link>
             </div>
           </div>
 
           <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
             {session ? (
               <>
                 <Link href="/dashboard">
                   <Button variant="outline" size="sm">
-                    Dashboard
+                    {t('dashboard')}
                   </Button>
                 </Link>
                 <Button
@@ -41,19 +45,19 @@ export function Header() {
                   size="sm"
                   onClick={() => signOut()}
                 >
-                  Sign Out
+                  {t('signOut')}
                 </Button>
               </>
             ) : (
               <>
                 <Link href="/auth/signin">
                   <Button variant="outline" size="sm">
-                    Sign In
+                    {t('signIn')}
                   </Button>
                 </Link>
                 <Link href="/auth/signup">
                   <Button size="sm">
-                    Sign Up
+                    {t('signUp')}
                   </Button>
                 </Link>
               </>
