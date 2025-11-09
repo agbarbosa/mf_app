@@ -1,35 +1,20 @@
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-
-// List of locale patterns to redirect (app is English-only)
-const locales = ['pt-BR', 'pt', 'es', 'en-US', 'en-GB', 'fr', 'de', 'it', 'ja', 'zh']
+import { locales } from './i18n'
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Check if the pathname starts with a locale
+  // Check if the pathname already has a supported locale
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   )
 
-  // If path has a locale prefix, redirect to the path without locale
-  if (pathnameHasLocale) {
-    const locale = locales.find(
-      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-    )
+  // If the path doesn't have a locale and is not a special path, it will be handled by app/page.tsx
+  // which redirects to the default locale. Just let it through.
 
-    if (locale) {
-      // Remove the locale from the pathname
-      const newPathname = pathname.replace(`/${locale}`, '') || '/'
-      const url = req.nextUrl.clone()
-      url.pathname = newPathname
-      return NextResponse.redirect(url)
-    }
-  }
-
-  // Use the default response for all other cases
-  // Auth protection is handled by the matcher config below
+  // Continue with normal request flow
   return NextResponse.next()
 }
 
@@ -45,13 +30,15 @@ export default withAuth(middleware, {
         path.startsWith('/auth') ||
         path.startsWith('/api/auth') ||
         path.startsWith('/_next') ||
-        path.startsWith('/public')
+        path.startsWith('/public') ||
+        path.match(/^\/(en|pt-BR)\/?$/) || // Locale home pages
+        path.match(/^\/(en|pt-BR)\/(auth|subscribe|events|courses|services)/) // Public locale pages
       ) {
         return true
       }
 
       // Protected routes require a token
-      if (path.startsWith('/dashboard')) {
+      if (path.match(/^\/(en|pt-BR)\/dashboard/)) {
         return !!token
       }
 

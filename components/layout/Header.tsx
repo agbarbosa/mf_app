@@ -35,10 +35,11 @@ export function Header() {
             <LanguageSwitcher />
             {session ? (
               <>
-                <Link href="/dashboard">
-                  <Button variant="outline" size="sm">
-                    {t('dashboard')}
-                  </Button>
+                <Link
+                  href="/dashboard"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500"
+                >
+                  {t('dashboard')}
                 </Link>
                 <Button
                   variant="secondary"
@@ -50,15 +51,17 @@ export function Header() {
               </>
             ) : (
               <>
-                <Link href="/auth/signin">
-                  <Button variant="outline" size="sm">
-                    {t('signIn')}
-                  </Button>
+                <Link
+                  href="/auth/signin"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500"
+                >
+                  {t('signIn')}
                 </Link>
-                <Link href="/auth/signup">
-                  <Button size="sm">
-                    {t('signUp')}
-                  </Button>
+                <Link
+                  href="/auth/signup"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500"
+                >
+                  {t('signUp')}
                 </Link>
               </>
             )}
