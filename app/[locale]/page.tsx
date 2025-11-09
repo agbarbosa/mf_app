@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 
 export default function HomePage() {
@@ -21,15 +20,17 @@ export default function HomePage() {
               {t('hero.subtitle')}
             </p>
             <div className="flex gap-4 justify-center">
-              <Link href="/auth/signup">
-                <Button size="lg" variant="outline" className="bg-white text-primary-600 hover:bg-gray-100">
-                  {t('hero.getStarted')}
-                </Button>
+              <Link
+                href="/auth/signup"
+                className="px-6 py-3 text-lg font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 border-white bg-white text-primary-600 hover:bg-gray-100 focus:ring-primary-500"
+              >
+                {t('hero.getStarted')}
               </Link>
-              <Link href="/subscribe">
-                <Button size="lg" className="bg-primary-900 hover:bg-primary-950">
-                  {t('hero.viewPlans')}
-                </Button>
+              <Link
+                href="/subscribe"
+                className="px-6 py-3 text-lg font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-primary-900 text-white hover:bg-primary-950 focus:ring-primary-500"
+              >
+                {t('hero.viewPlans')}
               </Link>
             </div>
           </div>
@@ -105,10 +106,11 @@ export default function HomePage() {
                     {t('pricing.free.features.communityForum')}
                   </li>
                 </ul>
-                <Link href="/auth/signup">
-                  <Button variant="outline" className="w-full">
-                    {t('pricing.free.button')}
-                  </Button>
+                <Link
+                  href="/auth/signup"
+                  className="block w-full px-4 py-2 text-base font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 text-center"
+                >
+                  {t('pricing.free.button')}
                 </Link>
               </CardContent>
             </Card>
@@ -144,10 +146,11 @@ export default function HomePage() {
                     {t('pricing.premium.features.prioritySupport')}
                   </li>
                 </ul>
-                <Link href="/subscribe">
-                  <Button className="w-full">
-                    {t('pricing.premium.button')}
-                  </Button>
+                <Link
+                  href="/subscribe"
+                  className="block w-full px-4 py-2 text-base font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 text-center"
+                >
+                  {t('pricing.premium.button')}
                 </Link>
               </CardContent>
             </Card>
