@@ -2,34 +2,9 @@ import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// List of locale patterns to redirect (app is English-only)
-const locales = ['pt-BR', 'pt', 'es', 'en-US', 'en-GB', 'fr', 'de', 'it', 'ja', 'zh']
-
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-
-  // Check if the pathname starts with a locale
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  )
-
-  // If path has a locale prefix, redirect to the path without locale
-  if (pathnameHasLocale) {
-    const locale = locales.find(
-      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-    )
-
-    if (locale) {
-      // Remove the locale from the pathname
-      const newPathname = pathname.replace(`/${locale}`, '') || '/'
-      const url = req.nextUrl.clone()
-      url.pathname = newPathname
-      return NextResponse.redirect(url)
-    }
-  }
-
-  // Use the default response for all other cases
-  // Auth protection is handled by the matcher config below
+  // Let next-intl handle locale routing
+  // Auth protection is handled by the withAuth wrapper below
   return NextResponse.next()
 }
 
@@ -50,8 +25,11 @@ export default withAuth(middleware, {
         return true
       }
 
+      // Extract the locale from the path (e.g., /en/dashboard or /pt-BR/dashboard)
+      const pathWithoutLocale = path.replace(/^\/(en|pt-BR)/, '')
+
       // Protected routes require a token
-      if (path.startsWith('/dashboard')) {
+      if (pathWithoutLocale.startsWith('/dashboard')) {
         return !!token
       }
 
@@ -63,7 +41,7 @@ export default withAuth(middleware, {
 
 export const config = {
   matcher: [
-    // Match all routes except static files
+    // Match all routes except static files and API routes
     '/((?!_next/static|_next/image|favicon.ico|public).*)',
   ],
 }
