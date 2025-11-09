@@ -1,8 +1,13 @@
+'use client'
+
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 
 export default function HomePage() {
+  const t = useTranslations('home')
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -10,20 +15,20 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-6">
-              Welcome to Mentor Futuro
+              {t('hero.title')}
             </h1>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Join our community and unlock exclusive access to events, courses, and professional networking opportunities.
+              {t('hero.subtitle')}
             </p>
             <div className="flex gap-4 justify-center">
               <Link href="/auth/signup">
                 <Button size="lg" variant="outline" className="bg-white text-primary-600 hover:bg-gray-100">
-                  Get Started Free
+                  {t('hero.getStarted')}
                 </Button>
               </Link>
               <Link href="/subscribe">
                 <Button size="lg" className="bg-primary-900 hover:bg-primary-950">
-                  View Premium Plans
+                  {t('hero.viewPlans')}
                 </Button>
               </Link>
             </div>
@@ -34,37 +39,37 @@ export default function HomePage() {
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">What We Offer</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{t('features.title')}</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
               <CardHeader>
-                <CardTitle>Events Calendar</CardTitle>
+                <CardTitle>{t('features.events.title')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Access exclusive community events, workshops, and networking opportunities. Premium members get early access to all events.
+                  {t('features.events.description')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Video Courses</CardTitle>
+                <CardTitle>{t('features.courses.title')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Learn from industry experts with our on-demand video courses. Expand your skills at your own pace.
+                  {t('features.courses.description')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Services Board</CardTitle>
+                <CardTitle>{t('features.services.title')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Connect with members offering professional services. Share your expertise and find the help you need.
+                  {t('features.services.description')}
                 </p>
               </CardContent>
             </Card>
@@ -75,31 +80,34 @@ export default function HomePage() {
       {/* Pricing Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Choose Your Plan</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{t('pricing.title')}</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card>
               <CardHeader>
-                <CardTitle>Free</CardTitle>
-                <p className="text-3xl font-bold mt-4">$0<span className="text-lg text-gray-600">/month</span></p>
+                <CardTitle>{t('pricing.free.title')}</CardTitle>
+                <p className="text-3xl font-bold mt-4">
+                  {t('pricing.free.price')}
+                  <span className="text-lg text-gray-600">{t('pricing.free.period')}</span>
+                </p>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Access to public events
+                    {t('pricing.free.features.publicEvents')}
                   </li>
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Limited course access
+                    {t('pricing.free.features.limitedCourses')}
                   </li>
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Community forum access
+                    {t('pricing.free.features.communityForum')}
                   </li>
                 </ul>
                 <Link href="/auth/signup">
                   <Button variant="outline" className="w-full">
-                    Get Started
+                    {t('pricing.free.button')}
                   </Button>
                 </Link>
               </CardContent>
@@ -107,35 +115,38 @@ export default function HomePage() {
 
             <Card className="border-2 border-primary-600">
               <CardHeader>
-                <CardTitle>Premium</CardTitle>
-                <p className="text-3xl font-bold mt-4">$29<span className="text-lg text-gray-600">/month</span></p>
+                <CardTitle>{t('pricing.premium.title')}</CardTitle>
+                <p className="text-3xl font-bold mt-4">
+                  {t('pricing.premium.price')}
+                  <span className="text-lg text-gray-600">{t('pricing.premium.period')}</span>
+                </p>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    All free features
+                    {t('pricing.premium.features.allFree')}
                   </li>
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Exclusive premium events
+                    {t('pricing.premium.features.exclusiveEvents')}
                   </li>
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Full course library access
+                    {t('pricing.premium.features.fullCourseLibrary')}
                   </li>
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Premium services directory
+                    {t('pricing.premium.features.servicesDirectory')}
                   </li>
                   <li className="flex items-center">
                     <span className="text-green-500 mr-2">✓</span>
-                    Priority support
+                    {t('pricing.premium.features.prioritySupport')}
                   </li>
                 </ul>
                 <Link href="/subscribe">
                   <Button className="w-full">
-                    Upgrade to Premium
+                    {t('pricing.premium.button')}
                   </Button>
                 </Link>
               </CardContent>
