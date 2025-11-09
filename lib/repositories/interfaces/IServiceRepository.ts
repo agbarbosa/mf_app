@@ -23,6 +23,11 @@ export interface UpdateServiceData {
 
 export interface IServiceRepository {
   /**
+   * Find all services (including unpublished)
+   */
+  findAll(): Promise<Service[]>
+
+  /**
    * Find all published services
    */
   findAllPublished(): Promise<Service[]>
@@ -31,6 +36,13 @@ export interface IServiceRepository {
    * Find published free services
    */
   findPublishedFreeServices(): Promise<Service[]>
+
+  /**
+   * Find services by category and/or premium status
+   * @param category - Optional service category filter
+   * @param isPremiumOnly - Optional premium status filter
+   */
+  findByCategory(category?: ServiceCategory, isPremiumOnly?: boolean): Promise<Service[]>
 
   /**
    * Find service by ID
