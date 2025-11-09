@@ -74,8 +74,11 @@ export default async function DashboardPage() {
                 </span>
               </div>
               {!isPremium ? (
-                <Link href="/subscribe">
-                  <Button className="w-full">Upgrade to Premium</Button>
+                <Link
+                  href="/subscribe"
+                  className="block w-full px-4 py-2 text-base font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 text-center"
+                >
+                  Upgrade to Premium
                 </Link>
               ) : (
                 <form action="/api/subscription/portal" method="POST">
@@ -97,10 +100,11 @@ export default async function DashboardPage() {
                 {user?.eventRegistrations.length || 0}
               </div>
               <p className="text-gray-600 mt-2">Total events registered</p>
-              <Link href="/events">
-                <Button variant="outline" className="w-full mt-4">
-                  Browse Events
-                </Button>
+              <Link
+                href="/events"
+                className="block w-full px-4 py-2 text-base font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 mt-4 text-center"
+              >
+                Browse Events
               </Link>
             </CardContent>
           </Card>
@@ -114,10 +118,11 @@ export default async function DashboardPage() {
                 {user?.enrollments.length || 0}
               </div>
               <p className="text-gray-600 mt-2">Courses enrolled</p>
-              <Link href="/courses">
-                <Button variant="outline" className="w-full mt-4">
-                  Browse Courses
-                </Button>
+              <Link
+                href="/courses"
+                className="block w-full px-4 py-2 text-base font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 mt-4 text-center"
+              >
+                Browse Courses
               </Link>
             </CardContent>
           </Card>

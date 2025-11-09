@@ -20,7 +20,9 @@ export default withAuth(middleware, {
         path.startsWith('/auth') ||
         path.startsWith('/api/auth') ||
         path.startsWith('/_next') ||
-        path.startsWith('/public')
+        path.startsWith('/public') ||
+        path.match(/^\/(en|pt-BR)\/?$/) || // Locale home pages
+        path.match(/^\/(en|pt-BR)\/(auth|subscribe|events|courses|services)/) // Public locale pages
       ) {
         return true
       }
