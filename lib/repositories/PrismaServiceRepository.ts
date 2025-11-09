@@ -91,6 +91,7 @@ export class PrismaServiceRepository implements IServiceRepository {
         title: data.title,
         description: data.description,
         category: data.category,
+        imageUrl: data.imageUrl,
         contactEmail: data.contactEmail,
         contactPhone: data.contactPhone,
         isPremiumOnly: data.isPremiumOnly,
