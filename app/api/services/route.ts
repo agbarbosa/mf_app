@@ -50,6 +50,7 @@ export async function POST(req: Request) {
       contactEmail: body.contactEmail,
       contactPhone: body.contactPhone,
       isPremiumOnly: body.isPremiumOnly || false,
+      published: body.published || false,
     })
 
     return NextResponse.json(service, { status: 201 })

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { Service, ServiceCategory } from '@prisma/client'
+import { Service } from '@prisma/client'
 import {
   IServiceRepository,
   CreateServiceData,
@@ -52,7 +52,7 @@ export class PrismaServiceRepository implements IServiceRepository {
    * @param isPremiumOnly - Optional premium status filter
    * @returns Array of filtered services
    */
-  async findByCategory(category?: ServiceCategory, isPremiumOnly?: boolean): Promise<Service[]> {
+  async findByCategory(category?: string, isPremiumOnly?: boolean): Promise<Service[]> {
     const where: any = {}
 
     if (category !== undefined) {

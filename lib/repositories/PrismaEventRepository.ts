@@ -148,9 +148,9 @@ export class PrismaEventRepository implements IEventRepository {
   async unregisterUser(eventId: string, userId: string): Promise<void> {
     await prisma.eventRegistration.delete({
       where: {
-        userId_eventId: {
-          userId,
+        eventId_userId: {
           eventId,
+          userId,
         },
       },
     })
