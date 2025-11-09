@@ -4,6 +4,7 @@ export interface CreateServiceData {
   title: string
   description: string
   category: ServiceCategory
+  imageUrl?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   isPremiumOnly: boolean
@@ -15,6 +16,7 @@ export interface UpdateServiceData {
   title?: string
   description?: string
   category?: ServiceCategory
+  imageUrl?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   isPremiumOnly?: boolean
