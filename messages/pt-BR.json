@@ -1,0 +1,70 @@
+{
+  "nav": {
+    "events": "Eventos",
+    "courses": "Cursos",
+    "services": "Serviços",
+    "dashboard": "Painel",
+    "signIn": "Entrar",
+    "signUp": "Criar Conta",
+    "signOut": "Sair"
+  },
+  "home": {
+    "hero": {
+      "title": "Bem-vindo ao Mentor Futuro",
+      "subtitle": "Junte-se à nossa comunidade e desbloqueie acesso exclusivo a eventos, cursos e oportunidades de networking profissional.",
+      "getStarted": "Comece Gratuitamente",
+      "viewPlans": "Ver Planos Premium"
+    },
+    "features": {
+      "title": "O Que Oferecemos",
+      "events": {
+        "title": "Calendário de Eventos",
+        "description": "Acesse eventos exclusivos da comunidade, workshops e oportunidades de networking. Membros premium têm acesso antecipado a todos os eventos."
+      },
+      "courses": {
+        "title": "Cursos em Vídeo",
+        "description": "Aprenda com especialistas da indústria através dos nossos cursos em vídeo sob demanda. Expanda suas habilidades no seu próprio ritmo."
+      },
+      "services": {
+        "title": "Quadro de Serviços",
+        "description": "Conecte-se com membros que oferecem serviços profissionais. Compartilhe sua expertise e encontre a ajuda que você precisa."
+      }
+    },
+    "pricing": {
+      "title": "Escolha Seu Plano",
+      "free": {
+        "title": "Gratuito",
+        "price": "R$ 0",
+        "period": "/mês",
+        "features": {
+          "publicEvents": "Acesso a eventos públicos",
+          "limitedCourses": "Acesso limitado a cursos",
+          "communityForum": "Acesso ao fórum da comunidade"
+        },
+        "button": "Começar"
+      },
+      "premium": {
+        "title": "Premium",
+        "price": "R$ 149",
+        "period": "/mês",
+        "features": {
+          "allFree": "Todos os recursos gratuitos",
+          "exclusiveEvents": "Eventos premium exclusivos",
+          "fullCourseLibrary": "Acesso completo à biblioteca de cursos",
+          "servicesDirectory": "Diretório de serviços premium",
+          "prioritySupport": "Suporte prioritário"
+        },
+        "button": "Atualizar para Premium"
+      }
+    }
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar"
+  }
+}

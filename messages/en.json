@@ -1,0 +1,70 @@
+{
+  "nav": {
+    "events": "Events",
+    "courses": "Courses",
+    "services": "Services",
+    "dashboard": "Dashboard",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "hero": {
+      "title": "Welcome to Mentor Futuro",
+      "subtitle": "Join our community and unlock exclusive access to events, courses, and professional networking opportunities.",
+      "getStarted": "Get Started Free",
+      "viewPlans": "View Premium Plans"
+    },
+    "features": {
+      "title": "What We Offer",
+      "events": {
+        "title": "Events Calendar",
+        "description": "Access exclusive community events, workshops, and networking opportunities. Premium members get early access to all events."
+      },
+      "courses": {
+        "title": "Video Courses",
+        "description": "Learn from industry experts with our on-demand video courses. Expand your skills at your own pace."
+      },
+      "services": {
+        "title": "Services Board",
+        "description": "Connect with members offering professional services. Share your expertise and find the help you need."
+      }
+    },
+    "pricing": {
+      "title": "Choose Your Plan",
+      "free": {
+        "title": "Free",
+        "price": "$0",
+        "period": "/month",
+        "features": {
+          "publicEvents": "Access to public events",
+          "limitedCourses": "Limited course access",
+          "communityForum": "Community forum access"
+        },
+        "button": "Get Started"
+      },
+      "premium": {
+        "title": "Premium",
+        "price": "$29",
+        "period": "/month",
+        "features": {
+          "allFree": "All free features",
+          "exclusiveEvents": "Exclusive premium events",
+          "fullCourseLibrary": "Full course library access",
+          "servicesDirectory": "Premium services directory",
+          "prioritySupport": "Priority support"
+        },
+        "button": "Upgrade to Premium"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  }
+}
