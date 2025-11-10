@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install all dependencies (including devDependencies needed for build)
-RUN npm ci && \
+RUN npm install && \
     npm cache clean --force
 
 # Generate Prisma client
