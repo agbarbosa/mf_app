@@ -21,7 +21,7 @@ RUN grep -iE "warn|deprecated" /tmp/npm-install.log > /app/npm-warnings.log || e
 RUN npx prisma generate 2>&1 | tee /tmp/prisma.log
 
 # Extract and save Prisma warnings
-RUN grep -iE "warn|error" /tmp/prisma.log >> /app/build-warnings.log || echo "No Prisma warnings found" >> /app/build-warnings.log
+RUN grep -iE "warn|error" /tmp/prisma.log > /app/build-warnings.log || echo "No Prisma warnings found" > /app/build-warnings.log
 
 # Stage 2: Builder
 FROM node:22-alpine AS builder
@@ -32,7 +32,7 @@ WORKDIR /app
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/npm-warnings.log ./npm-warnings.log
-COPY --from=deps /app/build-warnings.log ./build-warnings.log 2>/dev/null || true
+COPY --from=deps /app/build-warnings.log ./build-warnings.log
 COPY . .
 
 # Set environment variable for build
