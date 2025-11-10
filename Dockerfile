@@ -2,6 +2,7 @@
 # Stage 1: Dependencies
 FROM node:22-alpine AS deps
 RUN apk add --no-cache libc6-compat openssl
+RUN npm install -g npm@latest
 WORKDIR /app
 
 # Copy package files
@@ -18,6 +19,7 @@ RUN npx prisma generate
 # Stage 2: Builder
 FROM node:22-alpine AS builder
 RUN apk add --no-cache libc6-compat openssl
+RUN npm install -g npm@latest
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -33,6 +35,7 @@ RUN npm run build
 # Stage 3: Runner (Production)
 FROM node:22-alpine AS runner
 RUN apk add --no-cache libc6-compat openssl
+RUN npm install -g npm@latest
 WORKDIR /app
 
 ENV NODE_ENV production
