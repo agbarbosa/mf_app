@@ -17,8 +17,8 @@ RUN npm install 2>&1 | tee /tmp/npm-install.log && \
 RUN grep -iE "warn|deprecated" /tmp/npm-install.log > /app/npm-warnings.log || echo "No npm warnings found" > /app/npm-warnings.log && \
     echo "=== NPM Install Warnings ===" && cat /app/npm-warnings.log
 
-# Generate Prisma client
-RUN npx prisma generate 2>&1 | tee /tmp/prisma.log
+# Generate Prisma client (use local version from node_modules)
+RUN ./node_modules/.bin/prisma generate 2>&1 | tee /tmp/prisma.log
 
 # Extract and save Prisma warnings
 RUN grep -iE "warn|error" /tmp/prisma.log > /app/build-warnings.log || echo "No Prisma warnings found" > /app/build-warnings.log
