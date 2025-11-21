@@ -12,6 +12,16 @@ import {
  */
 export class PrismaServiceRepository implements IServiceRepository {
   /**
+   * Find all services (including unpublished)
+   * @returns Array of all services
+   */
+  async findAll(): Promise<Service[]> {
+    return prisma.service.findMany({
+      orderBy: { createdAt: 'desc' },
+    })
+  }
+
+  /**
    * Find all published services
    * @returns Array of published services
    */
@@ -32,6 +42,29 @@ export class PrismaServiceRepository implements IServiceRepository {
         published: true,
         isPremiumOnly: false,
       },
+      orderBy: { createdAt: 'desc' },
+    })
+  }
+
+  /**
+   * Find services by category and/or premium status
+   * @param category - Optional service category filter
+   * @param isPremiumOnly - Optional premium status filter
+   * @returns Array of filtered services
+   */
+  async findByCategory(category?: string, isPremiumOnly?: boolean): Promise<Service[]> {
+    const where: any = {}
+
+    if (category !== undefined) {
+      where.category = category
+    }
+
+    if (isPremiumOnly !== undefined) {
+      where.isPremiumOnly = isPremiumOnly
+    }
+
+    return prisma.service.findMany({
+      where,
       orderBy: { createdAt: 'desc' },
     })
   }
@@ -58,6 +91,7 @@ export class PrismaServiceRepository implements IServiceRepository {
         title: data.title,
         description: data.description,
         category: data.category,
+        imageUrl: data.imageUrl,
         contactEmail: data.contactEmail,
         contactPhone: data.contactPhone,
         isPremiumOnly: data.isPremiumOnly,

@@ -1,9 +1,10 @@
-import { Service, ServiceCategory } from '@prisma/client'
+import { Service } from '@prisma/client'
 
 export interface CreateServiceData {
   title: string
   description: string
-  category: ServiceCategory
+  category: string
+  imageUrl?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   isPremiumOnly: boolean
@@ -14,7 +15,8 @@ export interface CreateServiceData {
 export interface UpdateServiceData {
   title?: string
   description?: string
-  category?: ServiceCategory
+  category?: string
+  imageUrl?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   isPremiumOnly?: boolean
@@ -22,6 +24,11 @@ export interface UpdateServiceData {
 }
 
 export interface IServiceRepository {
+  /**
+   * Find all services (including unpublished)
+   */
+  findAll(): Promise<Service[]>
+
   /**
    * Find all published services
    */
@@ -31,6 +38,13 @@ export interface IServiceRepository {
    * Find published free services
    */
   findPublishedFreeServices(): Promise<Service[]>
+
+  /**
+   * Find services by category and/or premium status
+   * @param category - Optional service category filter
+   * @param isPremiumOnly - Optional premium status filter
+   */
+  findByCategory(category?: string, isPremiumOnly?: boolean): Promise<Service[]>
 
   /**
    * Find service by ID

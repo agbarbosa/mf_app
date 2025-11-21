@@ -53,6 +53,8 @@ next-env.d.ts
 Dockerfile
 .dockerignore
 docker-compose*.yml
+docker-build-logs/
+extract-build-logs.sh
 
 # Documentation
 *.md
